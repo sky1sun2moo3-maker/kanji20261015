@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>準2級漢字トレーニング PDF版3</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:12px;background:#f4f6f8;font-family:"Yu Gothic","Meiryo",sans-serif;color:#222}
+.container{max-width:980px;min-height:calc(100vh - 24px);margin:auto;padding:18px;background:#fff;border-radius:16px;box-shadow:0 4px 18px rgba(0,0,0,.1)}
+h1{text-align:center;font-size:24px;line-height:1.4;margin:8px 0 6px}
+.subtitle{text-align:center;color:#555;line-height:1.6;font-size:15px}
+label{display:block;margin-top:14px;font-weight:bold;font-size:16px}
+select{width:100%;margin-top:6px;padding:14px;font-size:17px;border:1px solid #bbb;border-radius:10px;background:#fff}
+button{width:100%;margin-top:12px;padding:15px;border:0;border-radius:12px;background:#2563eb;color:#fff;font-size:18px;font-weight:bold;cursor:pointer}
+.secondary{background:#555}
+.light{background:#e5e7eb;color:#222}
+.danger{background:#dc2626}
+.green{background:#047857}
+.note{margin-top:18px;padding:12px;border-left:6px solid #f97316;border-radius:8px;background:#fff7ed;color:#444;font-size:14px;line-height:1.7}
+.memory{margin-top:12px;padding:12px;border-left:6px solid #2563eb;border-radius:8px;background:#eff6ff;color:#333;font-size:14px;line-height:1.7}
+.hidden{display:none}
+.header{margin-top:12px;padding:14px;border:2px solid #222;border-radius:10px;background:#fafafa;line-height:1.8}
+.badge{display:inline-block;margin-left:6px;padding:3px 9px;border-radius:999px;background:#dbeafe;color:#1d4ed8;font-size:14px;font-weight:bold}
+.retest-badge{background:#fee2e2;color:#b91c1c}
+.progress{margin-top:14px;text-align:center;font-weight:bold}
+.card{margin-top:14px;padding:22px 16px;min-height:320px;border:2px solid #2563eb;border-radius:18px;background:#eef4ff;display:flex;flex-direction:column;justify-content:center}
+.num{text-align:center;font-size:20px;font-weight:bold;margin-bottom:12px}
+.label2{text-align:center;margin-bottom:10px;color:#1d4ed8;font-weight:bold}
+.question{font-size:clamp(24px,6.2vw,40px);font-weight:bold;line-height:1.7;text-align:center;word-break:keep-all;overflow-wrap:anywhere}
+.target{color:#dc2626;text-decoration:underline;text-underline-offset:6px}
+.line{width:86%;height:44px;margin:24px auto 0;border-bottom:3px solid #333}
+.answer{margin-top:16px;padding:16px;border:2px solid #047857;border-radius:14px;background:#ecfdf5;text-align:center}
+.answer-main{font-size:clamp(32px,10vw,64px);font-weight:bold;line-height:1.4;font-family:"Yu Mincho","Hiragino Mincho ProN",serif}
+.answer-sub{margin-top:8px;font-size:18px;line-height:1.7;text-align:left}
+.answer-sub strong{color:#111}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.row button{margin-top:0}
+.box{margin-top:16px;padding:14px;border:2px solid #2563eb;border-radius:12px;background:#eef4ff}
+.missbox{border-color:#dc2626;background:#fff1f2}
+.list{display:grid;grid-template-columns:1fr;gap:10px;font-size:16px;line-height:1.6}
+.item{padding:10px;background:white;border:1px solid #cbd5e1;border-radius:8px}
+.item-kanji{font-size:28px;font-weight:bold;font-family:"Yu Mincho","Hiragino Mincho ProN",serif}
+.small{font-size:14px;color:#555}
+@media(min-width:720px){
+.container{padding:28px}
+button{width:auto;min-width:160px;margin-right:8px}
+.start{width:100%}
+.row button{width:100%}
+.list{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>準2級 漢字トレーニング<br>PDF内容版3</h1>
+<p class="subtitle">PDFの116〜119ページの内容をもとに、読み・書きだけで練習できます。</p>
+
+<div id="settingBox">
+<label>出題範囲</label>
+<select id="rangeSelect">
+  <option value="all" selected>4ページすべて</option>
+  <option value="116">116ページ（第9回 前半）</option>
+  <option value="117">117ページ（第9回 後半）</option>
+  <option value="118">118ページ（第10回 前半）</option>
+  <option value="119">119ページ（第10回 後半）</option>
+  <option value="第9回">第9回 全体</option>
+  <option value="第10回">第10回 全体</option>
+</select>
+
+<label>出題モード</label>
+<select id="modeSelect">
+  <option value="read" selected>読み</option>
+  <option value="write">書き</option>
+</select>
+
+<label>問題数</label>
+<select id="countSelect">
+  <option value="5">5問</option>
+  <option value="10" selected>10問</option>
+  <option value="20">20問</option>
+  <option value="30">30問</option>
+  <option value="50">50問</option>
+  <option value="all">全問</option>
+</select>
+
+<label>出題順</label>
+<select id="orderSelect">
+  <option value="random" selected>ランダム</option>
+  <option value="normal">表の順番</option>
+</select>
+
+<div id="memoryInfo" class="memory"></div>
+
+<button class="start" onclick="makeTest(false)">通常テストを作る</button>
+<button class="danger start" onclick="makeTest(true)">間違えたものだけ再テスト</button>
+<button class="light start" onclick="clearStoredMisses()">間違えた記録をリセット</button>
+
+<div class="note">
+「読み」では、基本練習・実戦練習の文章からまとめて出題されます。文章中の【漢字・語句】の読みを書きます。<br>
+「書き」では、基本練習・実戦練習の文章からまとめて出題されます。文章中の【カタカナ・ひらがな】を漢字に直します。<br>
+答えを確認して間違っていたら「間違えたものに追加」を押してください。
+</div>
+</div>
+
+<div id="testArea" class="hidden">
+  <div class="header">
+    <strong>準2級 漢字トレーニング</strong>
+    <span id="modeBadge" class="badge"></span>
+    <span id="rangeBadge" class="badge"></span>
+    <span id="retestBadge" class="badge retest-badge hidden">再テスト</span>
+    <div id="instruction"></div>
+  </div>
+
+  <div id="progress" class="progress"></div>
+
+  <div class="card">
+    <div id="num" class="num"></div>
+    <div id="label2" class="label2"></div>
+    <div id="question" class="question"></div>
+    <div class="line"></div>
+  </div>
+
+  <div id="answerBox" class="answer hidden">
+    <div>答え</div>
+    <div id="answerMain" class="answer-main"></div>
+    <div id="answerSub" class="answer-sub"></div>
+  </div>
+
+  <button onclick="toggleAnswer()">この問題の答えを表示／非表示</button>
+
+  <div class="row">
+    <button class="danger" onclick="markCurrentMiss()">間違えたものに追加</button>
+    <button class="green" onclick="removeCurrentMiss()">覚えたので削除</button>
+  </div>
+
+  <div class="row">
+    <button class="light" onclick="prevQuestion()">前の問題</button>
+    <button onclick="nextQuestion()">次の問題</button>
+  </div>
+
+  <div>
+    <button class="secondary" onclick="makeTest(false)">通常テストを作る</button>
+    <button class="danger" onclick="makeTest(true)">間違えたものだけ再テスト</button>
+    <button class="secondary" onclick="toggleAllList()">全データを表示／非表示</button>
+    <button class="secondary" onclick="toggleMisses()">保存中の間違いを表示／非表示</button>
+    <button class="light" onclick="backToSetting()">設定に戻る</button>
+  </div>
+
+  <div id="allBox" class="box hidden">
+    <h2>全データ</h2>
+    <div id="allList" class="list"></div>
+  </div>
+
+  <div id="missBox" class="box missbox hidden">
+    <h2>保存中の間違い</h2>
+    <div id="missList" class="list"></div>
+  </div>
+</div>
+</div>
+
+<script>
+const questions = [{"id": 1, "sourceId": 1, "page": "116", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "娠", "readings": "シン", "word": "妊娠", "reading": "にんしん", "sentence": "妻は【妊娠】五か月だ。", "answer": "にんしん"}, {"id": 2, "sourceId": 1, "page": "116", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "娠", "readings": "シン", "word": "妊娠", "reading": "にんしん", "sentence": "【妊娠】中は体調管理が大切だ。", "answer": "にんしん"}, {"id": 3, "sourceId": 1, "page": "116", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "娠", "readings": "シン", "word": "妊娠", "reading": "にんしん", "sentence": "妻は【ニンシン】五か月だ。", "answer": "妊娠"}, {"id": 4, "sourceId": 1, "page": "116", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "娠", "readings": "シン", "word": "妊娠", "reading": "にんしん", "sentence": "【ニンシン】中は体調管理が大切だ。", "answer": "妊娠"}, {"id": 5, "sourceId": 2, "page": "116", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "紳", "readings": "シン", "word": "紳士", "reading": "しんし", "sentence": "【紳士】服売場で背広を買う。", "answer": "しんし"}, {"id": 6, "sourceId": 2, "page": "116", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "紳", "readings": "シン", "word": "貴紳", "reading": "きしん", "sentence": "【貴紳】にふさわしい行いをとる。", "answer": "きしん"}, {"id": 7, "sourceId": 2, "page": "116", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "紳", "readings": "シン", "word": "紳士", "reading": "しんし", "sentence": "【シンシ】服売場で背広を買う。", "answer": "紳士"}, {"id": 8, "sourceId": 2, "page": "116", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "紳", "readings": "シン", "word": "貴紳", "reading": "きしん", "sentence": "【キシン】にふさわしい行いをとる。", "answer": "貴紳"}, {"id": 9, "sourceId": 3, "page": "116", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "診", "readings": "シン／みる", "word": "打診", "reading": "だしん", "sentence": "各人の意向を【打診】した。", "answer": "だしん"}, {"id": 10, "sourceId": 3, "page": "116", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "診", "readings": "シン／みる", "word": "診る", "reading": "みる", "sentence": "病院で医者に【診】てもらう。", "answer": "みる"}, {"id": 11, "sourceId": 3, "page": "116", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "診", "readings": "シン／みる", "word": "打診", "reading": "だしん", "sentence": "各人の意向を【ダシン】した。", "answer": "打診"}, {"id": 12, "sourceId": 3, "page": "116", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "診", "readings": "シン／みる", "word": "診る", "reading": "みる", "sentence": "病院で医者に【ミ】てもらう。", "answer": "診る"}, {"id": 13, "sourceId": 4, "page": "116", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "刃", "readings": "ジン／は", "word": "刃渡り", "reading": "はわたり", "sentence": "【刃渡り】の短い包丁を使う。", "answer": "はわたり"}, {"id": 14, "sourceId": 4, "page": "116", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "刃", "readings": "ジン／は", "word": "刃渡り", "reading": "はわたり", "sentence": "【刃渡り】の短い包丁を使う。", "answer": "はわたり"}, {"id": 15, "sourceId": 4, "page": "116", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "刃", "readings": "ジン／は", "word": "刃渡り", "reading": "はわたり", "sentence": "【ハワタリ】の短い包丁を使う。", "answer": "刃渡り"}, {"id": 16, "sourceId": 4, "page": "116", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "刃", "readings": "ジン／は", "word": "刃渡り", "reading": "はわたり", "sentence": "【ハワタリ】の短い包丁を使う。", "answer": "刃渡り"}, {"id": 17, "sourceId": 5, "page": "116", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "迅", "readings": "ジン", "word": "迅速", "reading": "じんそく", "sentence": "状況に応じ【迅速】に行動する。", "answer": "じんそく"}, {"id": 18, "sourceId": 5, "page": "116", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "迅", "readings": "ジン", "word": "奮迅", "reading": "ふんじん", "sentence": "獅子【奮迅】の活躍をする。", "answer": "ふんじん"}, {"id": 19, "sourceId": 5, "page": "116", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "迅", "readings": "ジン", "word": "迅速", "reading": "じんそく", "sentence": "状況に応じ【ジンソク】に行動する。", "answer": "迅速"}, {"id": 20, "sourceId": 5, "page": "116", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "迅", "readings": "ジン", "word": "奮迅", "reading": "ふんじん", "sentence": "獅子【フンジン】の活躍をする。", "answer": "奮迅"}, {"id": 21, "sourceId": 6, "page": "116", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "甚", "readings": "ジン／はなはだ", "word": "甚大", "reading": "じんだい", "sentence": "事故の被害は【甚大】であった。", "answer": "じんだい"}, {"id": 22, "sourceId": 6, "page": "116", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "甚", "readings": "ジン／はなはだ", "word": "甚だ", "reading": "はなはだ", "sentence": "お手数をおかけし【甚だ】恐縮です。", "answer": "はなはだ"}, {"id": 23, "sourceId": 6, "page": "116", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "甚", "readings": "ジン／はなはだ", "word": "甚大", "reading": "じんだい", "sentence": "事故の被害は【ジンダイ】であった。", "answer": "甚大"}, {"id": 24, "sourceId": 6, "page": "116", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "甚", "readings": "ジン／はなはだ", "word": "甚だ", "reading": "はなはだ", "sentence": "お手数をおかけし【ハナハダ】恐縮です。", "answer": "甚だ"}, {"id": 25, "sourceId": 7, "page": "116", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "帥", "readings": "スイ", "word": "総帥", "reading": "そうすい", "sentence": "企業グループの【総帥】になる。", "answer": "そうすい"}, {"id": 26, "sourceId": 7, "page": "116", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "帥", "readings": "スイ", "word": "統帥", "reading": "とうすい", "sentence": "連合軍を【統帥】する。", "answer": "とうすい"}, {"id": 27, "sourceId": 7, "page": "116", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "帥", "readings": "スイ", "word": "総帥", "reading": "そうすい", "sentence": "企業グループの【ソウスイ】になる。", "answer": "総帥"}, {"id": 28, "sourceId": 7, "page": "116", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "帥", "readings": "スイ", "word": "統帥", "reading": "とうすい", "sentence": "連合軍を【トウスイ】する。", "answer": "統帥"}, {"id": 29, "sourceId": 8, "page": "116", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "睡", "readings": "スイ／ねむる", "word": "睡眠", "reading": "すいみん", "sentence": "十分な【睡眠】と休養を取る。", "answer": "すいみん"}, {"id": 30, "sourceId": 8, "page": "116", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "睡", "readings": "スイ／ねむる", "word": "睡魔", "reading": "すいま", "sentence": "疲労のあまり【睡魔】に襲われる。", "answer": "すいま"}, {"id": 31, "sourceId": 8, "page": "116", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "睡", "readings": "スイ／ねむる", "word": "睡眠", "reading": "すいみん", "sentence": "十分な【スイミン】と休養を取る。", "answer": "睡眠"}, {"id": 32, "sourceId": 8, "page": "116", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "睡", "readings": "スイ／ねむる", "word": "睡魔", "reading": "すいま", "sentence": "疲労のあまり【スイマ】に襲われる。", "answer": "睡魔"}, {"id": 33, "sourceId": 9, "page": "116", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "枢", "readings": "スウ", "word": "中枢", "reading": "ちゅうすう", "sentence": "政治の【中枢】を担う都市。", "answer": "ちゅうすう"}, {"id": 34, "sourceId": 9, "page": "116", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "枢", "readings": "スウ", "word": "枢要", "reading": "すうよう", "sentence": "政権の【枢要】な地位に就く。", "answer": "すうよう"}, {"id": 35, "sourceId": 9, "page": "116", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "枢", "readings": "スウ", "word": "中枢", "reading": "ちゅうすう", "sentence": "政治の【チュウスウ】を担う都市。", "answer": "中枢"}, {"id": 36, "sourceId": 9, "page": "116", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "枢", "readings": "スウ", "word": "枢要", "reading": "すうよう", "sentence": "政権の【スウヨウ】な地位に就く。", "answer": "枢要"}, {"id": 37, "sourceId": 10, "page": "116", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "崇", "readings": "スウ／あがめる", "word": "崇高", "reading": "すうこう", "sentence": "聖人の【崇高】な精神。", "answer": "すうこう"}, {"id": 38, "sourceId": 10, "page": "116", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "崇", "readings": "スウ／あがめる", "word": "崇拝", "reading": "すうはい", "sentence": "各地に自然【崇拝】が見られた。", "answer": "すうはい"}, {"id": 39, "sourceId": 10, "page": "116", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "崇", "readings": "スウ／あがめる", "word": "崇高", "reading": "すうこう", "sentence": "聖人の【スウコウ】な精神。", "answer": "崇高"}, {"id": 40, "sourceId": 10, "page": "116", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "崇", "readings": "スウ／あがめる", "word": "崇拝", "reading": "すうはい", "sentence": "各地に自然【スウハイ】が見られた。", "answer": "崇拝"}, {"id": 41, "sourceId": 11, "page": "117", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "据", "readings": "すえる／すわる", "word": "据える", "reading": "すえる", "sentence": "工場に新しい機械を【据】える。", "answer": "すえる"}, {"id": 42, "sourceId": 11, "page": "117", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "据", "readings": "すえる／すわる", "word": "据わる", "reading": "すわる", "sentence": "肝が【据】わった剛気な人物だ。", "answer": "すわる"}, {"id": 43, "sourceId": 11, "page": "117", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "据", "readings": "すえる／すわる", "word": "据える", "reading": "すえる", "sentence": "工場に新しい機械を【ス】える。", "answer": "据える"}, {"id": 44, "sourceId": 11, "page": "117", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "据", "readings": "すえる／すわる", "word": "据わる", "reading": "すわる", "sentence": "肝が【ス】わった剛気な人物だ。", "answer": "据わる"}, {"id": 45, "sourceId": 12, "page": "117", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "杉", "readings": "すぎ", "word": "杉", "reading": "すぎ", "sentence": "【杉】は日本特産の常緑高木だ。", "answer": "すぎ"}, {"id": 46, "sourceId": 12, "page": "117", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "杉", "readings": "すぎ", "word": "糸杉", "reading": "いとすぎ", "sentence": "ゴッホは【糸杉】を多く描いた。", "answer": "いとすぎ"}, {"id": 47, "sourceId": 12, "page": "117", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "杉", "readings": "すぎ", "word": "杉", "reading": "すぎ", "sentence": "【スギ】は日本特産の常緑高木だ。", "answer": "杉"}, {"id": 48, "sourceId": 12, "page": "117", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "杉", "readings": "すぎ", "word": "糸杉", "reading": "いとすぎ", "sentence": "ゴッホは【イトスギ】を多く描いた。", "answer": "糸杉"}, {"id": 49, "sourceId": 13, "page": "117", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "斉", "readings": "セイ", "word": "斉唱", "reading": "せいしょう", "sentence": "卒業式で校歌を【斉唱】する。", "answer": "せいしょう"}, {"id": 50, "sourceId": 13, "page": "117", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "斉", "readings": "セイ", "word": "一斉", "reading": "いっせい", "sentence": "町内で【一斉】清掃を行う。", "answer": "いっせい"}, {"id": 51, "sourceId": 13, "page": "117", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "斉", "readings": "セイ", "word": "斉唱", "reading": "せいしょう", "sentence": "卒業式で校歌を【セイショウ】する。", "answer": "斉唱"}, {"id": 52, "sourceId": 13, "page": "117", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "斉", "readings": "セイ", "word": "一斉", "reading": "いっせい", "sentence": "町内で【イッセイ】清掃を行う。", "answer": "一斉"}, {"id": 53, "sourceId": 14, "page": "117", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "逝", "readings": "セイ／ゆく", "word": "逝去", "reading": "せいきょ", "sentence": "ご尊父の【逝去】を悼む。", "answer": "せいきょ"}, {"id": 54, "sourceId": 14, "page": "117", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "逝", "readings": "セイ／ゆく", "word": "逝く", "reading": "いく", "sentence": "祖父は眠るように【逝】った。", "answer": "いく"}, {"id": 55, "sourceId": 14, "page": "117", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "逝", "readings": "セイ／ゆく", "word": "逝去", "reading": "せいきょ", "sentence": "ご尊父の【セイキョ】を悼む。", "answer": "逝去"}, {"id": 56, "sourceId": 14, "page": "117", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "逝", "readings": "セイ／ゆく", "word": "逝く", "reading": "いく", "sentence": "祖父は眠るように【イ】った。", "answer": "逝く"}, {"id": 57, "sourceId": 15, "page": "117", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "誓", "readings": "セイ／ちかう", "word": "宣誓", "reading": "せんせい", "sentence": "開会式で選手【宣誓】をする。", "answer": "せんせい"}, {"id": 58, "sourceId": 15, "page": "117", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "誓", "readings": "セイ／ちかう", "word": "誓い", "reading": "ちかい", "sentence": "結婚の【誓】いを交わす。", "answer": "ちかい"}, {"id": 59, "sourceId": 15, "page": "117", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "誓", "readings": "セイ／ちかう", "word": "宣誓", "reading": "せんせい", "sentence": "開会式で選手【センセイ】をする。", "answer": "宣誓"}, {"id": 60, "sourceId": 15, "page": "117", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "誓", "readings": "セイ／ちかう", "word": "誓い", "reading": "ちかい", "sentence": "結婚の【チカ】いを交わす。", "answer": "誓い"}, {"id": 61, "sourceId": 16, "page": "117", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "析", "readings": "セキ", "word": "分析", "reading": "ぶんせき", "sentence": "内容を詳しく【分析】する。", "answer": "ぶんせき"}, {"id": 62, "sourceId": 16, "page": "117", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "析", "readings": "セキ", "word": "解析", "reading": "かいせき", "sentence": "実験のデータを【解析】する。", "answer": "かいせき"}, {"id": 63, "sourceId": 16, "page": "117", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "析", "readings": "セキ", "word": "分析", "reading": "ぶんせき", "sentence": "内容を詳しく【ブンセキ】する。", "answer": "分析"}, {"id": 64, "sourceId": 16, "page": "117", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "析", "readings": "セキ", "word": "解析", "reading": "かいせき", "sentence": "実験のデータを【カイセキ】する。", "answer": "解析"}, {"id": 65, "sourceId": 17, "page": "117", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "拙", "readings": "セツ／つたない", "word": "巧拙", "reading": "こうせつ", "sentence": "字の【巧拙】は問わない。", "answer": "こうせつ"}, {"id": 66, "sourceId": 17, "page": "117", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "拙", "readings": "セツ／つたない", "word": "拙い", "reading": "つたない", "sentence": "【拙】い心を打つ文章だ。", "answer": "つたない"}, {"id": 67, "sourceId": 17, "page": "117", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "拙", "readings": "セツ／つたない", "word": "巧拙", "reading": "こうせつ", "sentence": "字の【コウセツ】は問わない。", "answer": "巧拙"}, {"id": 68, "sourceId": 17, "page": "117", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "拙", "readings": "セツ／つたない", "word": "拙い", "reading": "つたない", "sentence": "【ツタナ】い心を打つ文章だ。", "answer": "拙い"}, {"id": 69, "sourceId": 18, "page": "117", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "窃", "readings": "セツ", "word": "窃盗", "reading": "せっとう", "sentence": "【窃盗】犯が警察に捕まった。", "answer": "せっとう"}, {"id": 70, "sourceId": 18, "page": "117", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "窃", "readings": "セツ", "word": "窃取", "reading": "せっしゅ", "sentence": "企業秘密を【窃取】された。", "answer": "せっしゅ"}, {"id": 71, "sourceId": 18, "page": "117", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "窃", "readings": "セツ", "word": "窃盗", "reading": "せっとう", "sentence": "【セットウ】犯が警察に捕まった。", "answer": "窃盗"}, {"id": 72, "sourceId": 18, "page": "117", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "窃", "readings": "セツ", "word": "窃取", "reading": "せっしゅ", "sentence": "企業秘密を【セッシュ】された。", "answer": "窃取"}, {"id": 73, "sourceId": 19, "page": "117", "lesson": "第9回", "mode": "read", "kind": "基本", "kanji": "仙", "readings": "セン", "word": "歌仙", "reading": "かせん", "sentence": "小野小町は六【歌仙】の一人だ。", "answer": "かせん"}, {"id": 74, "sourceId": 19, "page": "117", "lesson": "第9回", "mode": "read", "kind": "実戦", "kanji": "仙", "readings": "セン", "word": "仙人", "reading": "せんにん", "sentence": "不老不死を得た【仙人】が住むとされた山だ。", "answer": "せんにん"}, {"id": 75, "sourceId": 19, "page": "117", "lesson": "第9回", "mode": "write", "kind": "基本", "kanji": "仙", "readings": "セン", "word": "歌仙", "reading": "かせん", "sentence": "小野小町は六【カセン】の一人だ。", "answer": "歌仙"}, {"id": 76, "sourceId": 19, "page": "117", "lesson": "第9回", "mode": "write", "kind": "実戦", "kanji": "仙", "readings": "セン", "word": "仙人", "reading": "せんにん", "sentence": "不老不死を得た【センニン】が住むとされた山だ。", "answer": "仙人"}, {"id": 77, "sourceId": 20, "page": "118", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "栓", "readings": "セン", "word": "消火栓", "reading": "しょうかせん", "sentence": "道路の交差点にある消火【栓】。", "answer": "しょうかせん"}, {"id": 78, "sourceId": 20, "page": "118", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "栓", "readings": "セン", "word": "耳栓", "reading": "みみせん", "sentence": "【耳栓】をして集中する。", "answer": "みみせん"}, {"id": 79, "sourceId": 20, "page": "118", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "栓", "readings": "セン", "word": "消火栓", "reading": "しょうかせん", "sentence": "道路の交差点にある消火【セン】。", "answer": "消火栓"}, {"id": 80, "sourceId": 20, "page": "118", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "栓", "readings": "セン", "word": "耳栓", "reading": "みみせん", "sentence": "【ミミセン】をして集中する。", "answer": "耳栓"}, {"id": 81, "sourceId": 21, "page": "118", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "旋", "readings": "セン", "word": "旋律", "reading": "せんりつ", "sentence": "美しいピアノの【旋律】が聞こえる。", "answer": "せんりつ"}, {"id": 82, "sourceId": 21, "page": "118", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "旋", "readings": "セン", "word": "旋回", "reading": "せんかい", "sentence": "上空で鳥が【旋回】する。", "answer": "せんかい"}, {"id": 83, "sourceId": 21, "page": "118", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "旋", "readings": "セン", "word": "旋律", "reading": "せんりつ", "sentence": "美しいピアノの【センリツ】が聞こえる。", "answer": "旋律"}, {"id": 84, "sourceId": 21, "page": "118", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "旋", "readings": "セン", "word": "旋回", "reading": "せんかい", "sentence": "上空で鳥が【センカイ】する。", "answer": "旋回"}, {"id": 85, "sourceId": 22, "page": "118", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "践", "readings": "セン", "word": "実践", "reading": "じっせん", "sentence": "理論に基づいて【実践】する。", "answer": "じっせん"}, {"id": 86, "sourceId": 22, "page": "118", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "践", "readings": "セン", "word": "実践", "reading": "じっせん", "sentence": "上の例文を書き写し、【実践】する。", "answer": "じっせん"}, {"id": 87, "sourceId": 22, "page": "118", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "践", "readings": "セン", "word": "実践", "reading": "じっせん", "sentence": "理論に基づいて【ジッセン】する。", "answer": "実践"}, {"id": 88, "sourceId": 22, "page": "118", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "践", "readings": "セン", "word": "実践", "reading": "じっせん", "sentence": "上の例文を書き写し、【ジッセン】する。", "answer": "実践"}, {"id": 89, "sourceId": 23, "page": "118", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "遷", "readings": "セン", "word": "変遷", "reading": "へんせん", "sentence": "時代の【変遷】を感じる風景。", "answer": "へんせん"}, {"id": 90, "sourceId": 23, "page": "118", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "遷", "readings": "セン", "word": "遷都", "reading": "せんと", "sentence": "七九四年、平安京に【遷都】した。", "answer": "せんと"}, {"id": 91, "sourceId": 23, "page": "118", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "遷", "readings": "セン", "word": "変遷", "reading": "へんせん", "sentence": "時代の【ヘンセン】を感じる風景。", "answer": "変遷"}, {"id": 92, "sourceId": 23, "page": "118", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "遷", "readings": "セン", "word": "遷都", "reading": "せんと", "sentence": "七九四年、平安京に【セント】した。", "answer": "遷都"}, {"id": 93, "sourceId": 24, "page": "118", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "薦", "readings": "セン／すすめる", "word": "推薦", "reading": "すいせん", "sentence": "代表に【推薦】される。", "answer": "すいせん"}, {"id": 94, "sourceId": 24, "page": "118", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "薦", "readings": "セン／すすめる", "word": "薦める", "reading": "すすめる", "sentence": "会長候補として【薦】める。", "answer": "すすめる"}, {"id": 95, "sourceId": 24, "page": "118", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "薦", "readings": "セン／すすめる", "word": "推薦", "reading": "すいせん", "sentence": "代表に【スイセン】される。", "answer": "推薦"}, {"id": 96, "sourceId": 24, "page": "118", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "薦", "readings": "セン／すすめる", "word": "薦める", "reading": "すすめる", "sentence": "会長候補として【スス】める。", "answer": "薦める"}, {"id": 97, "sourceId": 25, "page": "118", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "繊", "readings": "セン", "word": "繊細", "reading": "せんさい", "sentence": "【繊細】な感覚が光る絵だ。", "answer": "せんさい"}, {"id": 98, "sourceId": 25, "page": "118", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "繊", "readings": "セン", "word": "繊維", "reading": "せんい", "sentence": "レーヨンは化学【繊維】である。", "answer": "せんい"}, {"id": 99, "sourceId": 25, "page": "118", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "繊", "readings": "セン", "word": "繊細", "reading": "せんさい", "sentence": "【センサイ】な感覚が光る絵だ。", "answer": "繊細"}, {"id": 100, "sourceId": 25, "page": "118", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "繊", "readings": "セン", "word": "繊維", "reading": "せんい", "sentence": "レーヨンは化学【センイ】である。", "answer": "繊維"}, {"id": 101, "sourceId": 26, "page": "118", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "禅", "readings": "ゼン", "word": "座禅", "reading": "ざぜん", "sentence": "【座禅】を組んで精神修養を積む。", "answer": "ざぜん"}, {"id": 102, "sourceId": 26, "page": "118", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "禅", "readings": "ゼン", "word": "禅宗", "reading": "ぜんしゅう", "sentence": "【禅宗】は鎌倉時代に広まった。", "answer": "ぜんしゅう"}, {"id": 103, "sourceId": 26, "page": "118", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "禅", "readings": "ゼン", "word": "座禅", "reading": "ざぜん", "sentence": "【ザゼン】を組んで精神修養を積む。", "answer": "座禅"}, {"id": 104, "sourceId": 26, "page": "118", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "禅", "readings": "ゼン", "word": "禅宗", "reading": "ぜんしゅう", "sentence": "【ゼンシュウ】は鎌倉時代に広まった。", "answer": "禅宗"}, {"id": 105, "sourceId": 27, "page": "118", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "漸", "readings": "ゼン", "word": "漸次", "reading": "ぜんじ", "sentence": "病気が【漸次】快方に向かう。", "answer": "ぜんじ"}, {"id": 106, "sourceId": 27, "page": "118", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "漸", "readings": "ゼン", "word": "漸増", "reading": "ぜんぞう", "sentence": "収益は【漸増】傾向だ。", "answer": "ぜんぞう"}, {"id": 107, "sourceId": 27, "page": "118", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "漸", "readings": "ゼン", "word": "漸次", "reading": "ぜんじ", "sentence": "病気が【ゼンジ】快方に向かう。", "answer": "漸次"}, {"id": 108, "sourceId": 27, "page": "118", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "漸", "readings": "ゼン", "word": "漸増", "reading": "ぜんぞう", "sentence": "収益は【ゼンゾウ】傾向だ。", "answer": "漸増"}, {"id": 109, "sourceId": 28, "page": "118", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "租", "readings": "ソ", "word": "租税", "reading": "そぜい", "sentence": "【租税】が国家財政を支える。", "answer": "そぜい"}, {"id": 110, "sourceId": 28, "page": "118", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "租", "readings": "ソ", "word": "租借", "reading": "そしゃく", "sentence": "イギリスは香港を【租借】していた。", "answer": "そしゃく"}, {"id": 111, "sourceId": 28, "page": "118", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "租", "readings": "ソ", "word": "租税", "reading": "そぜい", "sentence": "【ソゼイ】が国家財政を支える。", "answer": "租税"}, {"id": 112, "sourceId": 28, "page": "118", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "租", "readings": "ソ", "word": "租借", "reading": "そしゃく", "sentence": "イギリスは香港を【ソシャク】していた。", "answer": "租借"}, {"id": 113, "sourceId": 29, "page": "118", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "疎", "readings": "ソ／うとい・うとむ", "word": "疎遠", "reading": "そえん", "sentence": "【疎遠】になっていた友と再会した。", "answer": "そえん"}, {"id": 114, "sourceId": 29, "page": "118", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "疎", "readings": "ソ／うとい・うとむ", "word": "疎い", "reading": "うとい", "sentence": "私は政治に【疎】い。", "answer": "うとい"}, {"id": 115, "sourceId": 29, "page": "118", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "疎", "readings": "ソ／うとい・うとむ", "word": "疎遠", "reading": "そえん", "sentence": "【ソエン】になっていた友と再会した。", "answer": "疎遠"}, {"id": 116, "sourceId": 29, "page": "118", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "疎", "readings": "ソ／うとい・うとむ", "word": "疎い", "reading": "うとい", "sentence": "私は政治に【ウト】い。", "answer": "疎い"}, {"id": 117, "sourceId": 30, "page": "119", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "塑", "readings": "ソ", "word": "塑像", "reading": "そぞう", "sentence": "美術の授業で【塑像】を作る。", "answer": "そぞう"}, {"id": 118, "sourceId": 30, "page": "119", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "塑", "readings": "ソ", "word": "可塑剤", "reading": "かそざい", "sentence": "【可塑剤】を用いて加工する。", "answer": "かそざい"}, {"id": 119, "sourceId": 30, "page": "119", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "塑", "readings": "ソ", "word": "塑像", "reading": "そぞう", "sentence": "美術の授業で【ソゾウ】を作る。", "answer": "塑像"}, {"id": 120, "sourceId": 30, "page": "119", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "塑", "readings": "ソ", "word": "可塑剤", "reading": "かそざい", "sentence": "【カソザイ】を用いて加工する。", "answer": "可塑剤"}, {"id": 121, "sourceId": 31, "page": "119", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "壮", "readings": "ソウ", "word": "壮大", "reading": "そうだい", "sentence": "【壮大】な宇宙開発計画が発表される。", "answer": "そうだい"}, {"id": 122, "sourceId": 31, "page": "119", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "壮", "readings": "ソウ", "word": "壮観", "reading": "そうかん", "sentence": "息をのむような【壮観】だ。", "answer": "そうかん"}, {"id": 123, "sourceId": 31, "page": "119", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "壮", "readings": "ソウ", "word": "壮大", "reading": "そうだい", "sentence": "【ソウダイ】な宇宙開発計画が発表される。", "answer": "壮大"}, {"id": 124, "sourceId": 31, "page": "119", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "壮", "readings": "ソウ", "word": "壮観", "reading": "そうかん", "sentence": "息をのむような【ソウカン】だ。", "answer": "壮観"}, {"id": 125, "sourceId": 32, "page": "119", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "荘", "readings": "ソウ", "word": "荘厳", "reading": "そうごん", "sentence": "【荘厳】な東大寺大仏殿。", "answer": "そうごん"}, {"id": 126, "sourceId": 32, "page": "119", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "荘", "readings": "ソウ", "word": "別荘", "reading": "べっそう", "sentence": "夏休みは【別荘】に行く。", "answer": "べっそう"}, {"id": 127, "sourceId": 32, "page": "119", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "荘", "readings": "ソウ", "word": "荘厳", "reading": "そうごん", "sentence": "【ソウゴン】な東大寺大仏殿。", "answer": "荘厳"}, {"id": 128, "sourceId": 32, "page": "119", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "荘", "readings": "ソウ", "word": "別荘", "reading": "べっそう", "sentence": "夏休みは【ベッソウ】に行く。", "answer": "別荘"}, {"id": 129, "sourceId": 33, "page": "119", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "捜", "readings": "ソウ／さがす", "word": "捜査", "reading": "そうさ", "sentence": "犯罪【捜査】に協力する。", "answer": "そうさ"}, {"id": 130, "sourceId": 33, "page": "119", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "捜", "readings": "ソウ／さがす", "word": "捜す", "reading": "さがす", "sentence": "警察が犯人を【捜】す。", "answer": "さがす"}, {"id": 131, "sourceId": 33, "page": "119", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "捜", "readings": "ソウ／さがす", "word": "捜査", "reading": "そうさ", "sentence": "犯罪【ソウサ】に協力する。", "answer": "捜査"}, {"id": 132, "sourceId": 33, "page": "119", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "捜", "readings": "ソウ／さがす", "word": "捜す", "reading": "さがす", "sentence": "警察が犯人を【サガ】す。", "answer": "捜す"}, {"id": 133, "sourceId": 34, "page": "119", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "挿", "readings": "ソウ／さす", "word": "挿入", "reading": "そうにゅう", "sentence": "文中に一語【挿入】する。", "answer": "そうにゅう"}, {"id": 134, "sourceId": 34, "page": "119", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "挿", "readings": "ソウ／さす", "word": "挿す", "reading": "さす", "sentence": "花瓶に一輪の花を【挿】す。", "answer": "さす"}, {"id": 135, "sourceId": 34, "page": "119", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "挿", "readings": "ソウ／さす", "word": "挿入", "reading": "そうにゅう", "sentence": "文中に一語【ソウニュウ】する。", "answer": "挿入"}, {"id": 136, "sourceId": 34, "page": "119", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "挿", "readings": "ソウ／さす", "word": "挿す", "reading": "さす", "sentence": "花瓶に一輪の花を【サ】す。", "answer": "挿す"}, {"id": 137, "sourceId": 35, "page": "119", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "曹", "readings": "ソウ", "word": "法曹", "reading": "ほうそう", "sentence": "弁護士は【法曹】界の人だ。", "answer": "ほうそう"}, {"id": 138, "sourceId": 35, "page": "119", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "曹", "readings": "ソウ", "word": "御曹司", "reading": "おんぞうし", "sentence": "彼は資産家の【御曹司】だ。", "answer": "おんぞうし"}, {"id": 139, "sourceId": 35, "page": "119", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "曹", "readings": "ソウ", "word": "法曹", "reading": "ほうそう", "sentence": "弁護士は【ホウソウ】界の人だ。", "answer": "法曹"}, {"id": 140, "sourceId": 35, "page": "119", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "曹", "readings": "ソウ", "word": "御曹司", "reading": "おんぞうし", "sentence": "彼は資産家の【オンゾウシ】だ。", "answer": "御曹司"}, {"id": 141, "sourceId": 36, "page": "119", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "喪", "readings": "ソウ／も", "word": "喪失", "reading": "そうしつ", "sentence": "自信【喪失】した友を励ます。", "answer": "そうしつ"}, {"id": 142, "sourceId": 36, "page": "119", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "喪", "readings": "ソウ／も", "word": "喪服", "reading": "もふく", "sentence": "【喪服】で葬儀に参列する。", "answer": "もふく"}, {"id": 143, "sourceId": 36, "page": "119", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "喪", "readings": "ソウ／も", "word": "喪失", "reading": "そうしつ", "sentence": "自信【ソウシツ】した友を励ます。", "answer": "喪失"}, {"id": 144, "sourceId": 36, "page": "119", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "喪", "readings": "ソウ／も", "word": "喪服", "reading": "もふく", "sentence": "【モフク】で葬儀に参列する。", "answer": "喪服"}, {"id": 145, "sourceId": 37, "page": "119", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "槽", "readings": "ソウ", "word": "浴槽", "reading": "よくそう", "sentence": "【浴槽】に湯を入れる。", "answer": "よくそう"}, {"id": 146, "sourceId": 37, "page": "119", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "槽", "readings": "ソウ", "word": "水槽", "reading": "すいそう", "sentence": "【水槽】に金魚を放つ。", "answer": "すいそう"}, {"id": 147, "sourceId": 37, "page": "119", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "槽", "readings": "ソウ", "word": "浴槽", "reading": "よくそう", "sentence": "【ヨクソウ】に湯を入れる。", "answer": "浴槽"}, {"id": 148, "sourceId": 37, "page": "119", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "槽", "readings": "ソウ", "word": "水槽", "reading": "すいそう", "sentence": "【スイソウ】に金魚を放つ。", "answer": "水槽"}, {"id": 149, "sourceId": 38, "page": "119", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "霜", "readings": "ソウ／しも", "word": "星霜", "reading": "せいそう", "sentence": "創業から幾【星霜】を経る。", "answer": "せいそう"}, {"id": 150, "sourceId": 38, "page": "119", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "霜", "readings": "ソウ／しも", "word": "霜", "reading": "しも", "sentence": "寒い朝に【霜】が降りる。", "answer": "しも"}, {"id": 151, "sourceId": 38, "page": "119", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "霜", "readings": "ソウ／しも", "word": "星霜", "reading": "せいそう", "sentence": "創業から幾【セイソウ】を経る。", "answer": "星霜"}, {"id": 152, "sourceId": 38, "page": "119", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "霜", "readings": "ソウ／しも", "word": "霜", "reading": "しも", "sentence": "寒い朝に【シモ】が降りる。", "answer": "霜"}, {"id": 153, "sourceId": 39, "page": "119", "lesson": "第10回", "mode": "read", "kind": "基本", "kanji": "藻", "readings": "ソウ／も", "word": "海藻", "reading": "かいそう", "sentence": "ワカメは食用の【海藻】類だ。", "answer": "かいそう"}, {"id": 154, "sourceId": 39, "page": "119", "lesson": "第10回", "mode": "read", "kind": "実戦", "kanji": "藻", "readings": "ソウ／も", "word": "藻屑", "reading": "もくず", "sentence": "多くの兵士が海の【藻屑】となった。", "answer": "もくず"}, {"id": 155, "sourceId": 39, "page": "119", "lesson": "第10回", "mode": "write", "kind": "基本", "kanji": "藻", "readings": "ソウ／も", "word": "海藻", "reading": "かいそう", "sentence": "ワカメは食用の【カイソウ】類だ。", "answer": "海藻"}, {"id": 156, "sourceId": 39, "page": "119", "lesson": "第10回", "mode": "write", "kind": "実戦", "kanji": "藻", "readings": "ソウ／も", "word": "藻屑", "reading": "もくず", "sentence": "多くの兵士が海の【モクズ】となった。", "answer": "藻屑"}];
+const STORAGE_KEY = "kanji_pdf_116_119_read_write_miss_v1";
+let currentQuestions = [];
+let currentIndex = 0;
+let currentMode = "read";
+
+function shuffle(arr) {
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function getMissKeys() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
+  catch(e) { return []; }
+}
+
+function setMissKeys(keys) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...new Set(keys)]));
+  updateMemoryInfo();
+  showMisses();
+}
+
+function getMissItems() {
+  const keys=getMissKeys();
+  return questions.filter(q => keys.includes(q.id));
+}
+
+function addMiss(q) {
+  const keys=getMissKeys();
+  if(!keys.includes(q.id)) keys.push(q.id);
+  setMissKeys(keys);
+}
+
+function removeMiss(q) {
+  setMissKeys(getMissKeys().filter(k => k !== q.id));
+}
+
+function clearStoredMisses() {
+  if(confirm("保存中の間違いをすべて削除しますか。")) {
+    localStorage.removeItem(STORAGE_KEY);
+    updateMemoryInfo();
+    showMisses();
+  }
+}
+
+function updateMemoryInfo() {
+  const n = getMissItems().length;
+  const el = document.getElementById("memoryInfo");
+  if(el) el.textContent = "現在保存されている間違い：" + n + "件";
+}
+
+function getFilteredSource(retest) {
+  const range = document.getElementById("rangeSelect").value;
+  currentMode = document.getElementById("modeSelect").value;
+
+  let source = retest ? getMissItems() : questions;
+  source = source.filter(q => q.mode === currentMode);
+
+  if(range === "第9回" || range === "第10回") {
+    source = source.filter(q => q.lesson === range);
+  } else if(range !== "all") {
+    source = source.filter(q => q.page === range);
+  }
+  return source;
+}
+
+function makeTest(retest) {
+  const countValue = document.getElementById("countSelect").value;
+  const order = document.getElementById("orderSelect").value;
+
+  let source = getFilteredSource(retest);
+  if(retest && source.length === 0) {
+    alert("この条件には保存中の間違いがありません。");
+    return;
+  }
+  if(source.length === 0) {
+    alert("この条件に合う問題がありません。");
+    return;
+  }
+
+  const base = order === "random" ? shuffle(source) : [...source];
+  currentQuestions = countValue === "all" ? base : base.slice(0, Number(countValue));
+  currentIndex = 0;
+
+  document.getElementById("settingBox").classList.add("hidden");
+  document.getElementById("testArea").classList.remove("hidden");
+  document.getElementById("answerBox").classList.add("hidden");
+  document.getElementById("allBox").classList.add("hidden");
+  document.getElementById("missBox").classList.add("hidden");
+  document.getElementById("retestBadge").classList.toggle("hidden", !retest);
+
+  updateHeader();
+  showQuestion();
+  showAllList();
+  showMisses();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function updateHeader() {
+  document.getElementById("modeBadge").textContent = currentMode === "read" ? "読み" : "書き";
+  document.getElementById("rangeBadge").textContent = document.getElementById("rangeSelect").selectedOptions[0].textContent;
+  const instruction = document.getElementById("instruction");
+  if(currentMode === "read") {
+    instruction.textContent = "文章中の【漢字・語句】の読みを書きます。基本練習と実戦練習は混ぜて出題されます。";
+  } else {
+    instruction.textContent = "文章中の【カタカナ・ひらがな】を漢字に直します。基本練習と実戦練習は混ぜて出題されます。";
+  }
+}
+
+function markTarget(text) {
+  return escapeHtml(text).replace(/【/g, "<span class='target'>【").replace(/】/g, "】</span>");
+}
+
+function showQuestion() {
+  const q = currentQuestions[currentIndex];
+  document.getElementById("progress").textContent = "進行状況：" + (currentIndex+1) + " / " + currentQuestions.length;
+  document.getElementById("num").textContent = "問" + (currentIndex+1) + "　" + q.lesson + "・" + q.page + "ページ";
+  document.getElementById("answerBox").classList.add("hidden");
+
+  document.getElementById("label2").textContent = (currentMode === "read" ? "読み" : "書き") + "（" + q.kind + "）";
+  document.getElementById("question").innerHTML = markTarget(q.sentence);
+  document.getElementById("answerMain").textContent = q.answer;
+  document.getElementById("answerSub").innerHTML =
+    "<strong>語句：</strong>" + escapeHtml(q.word) +
+    "<br><strong>読み：</strong>" + escapeHtml(q.reading) +
+    "<br><strong>中心の漢字：</strong>" + escapeHtml(q.kanji) +
+    "<br><strong>漢字の読み：</strong>" + escapeHtml(q.readings) +
+    "<br><strong>出題元：</strong>" + escapeHtml(q.kind) + "練習";
+}
+
+function toggleAnswer() {
+  document.getElementById("answerBox").classList.toggle("hidden");
+}
+
+function markCurrentMiss() {
+  const q = currentQuestions[currentIndex];
+  addMiss(q);
+  alert("保存しました： " + q.word + "（" + q.kind + "・" + (q.mode === "read" ? "読み" : "書き") + "）");
+}
+
+function removeCurrentMiss() {
+  const q = currentQuestions[currentIndex];
+  removeMiss(q);
+  alert("削除しました： " + q.word);
+}
+
+function nextQuestion() {
+  if(currentIndex < currentQuestions.length - 1) {
+    currentIndex++;
+    showQuestion();
+    window.scrollTo({top:0,behavior:"smooth"});
+  } else {
+    alert("最後の問題です。");
+  }
+}
+
+function prevQuestion() {
+  if(currentIndex > 0) {
+    currentIndex--;
+    showQuestion();
+    window.scrollTo({top:0,behavior:"smooth"});
+  } else {
+    alert("最初の問題です。");
+  }
+}
+
+function showAllList() {
+  const list = document.getElementById("allList");
+  list.innerHTML = "";
+  questions.forEach(q => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = "<span class='item-kanji'>" + escapeHtml(q.kanji) + "</span>　" +
+      escapeHtml(q.readings) +
+      "<br><strong>" + escapeHtml(q.lesson) + " / " + escapeHtml(q.page) + "ページ / " + escapeHtml(q.kind) + " / " + (q.mode === "read" ? "読み" : "書き") + "</strong>" +
+      "<br>語句：" + escapeHtml(q.word) + "（" + escapeHtml(q.reading) + "）";
+    list.appendChild(div);
+  });
+}
+
+function showMisses() {
+  const list = document.getElementById("missList");
+  list.innerHTML = "";
+  const miss = getMissItems();
+  if(miss.length === 0) {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.textContent = "保存中の間違いはありません。";
+    list.appendChild(div);
+    return;
+  }
+  miss.forEach(q => {
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = "<span class='item-kanji'>" + escapeHtml(q.kanji) + "</span>　" +
+      escapeHtml(q.word) +
+      "<br>" + escapeHtml(q.lesson) + " / " + escapeHtml(q.page) + "ページ / " + escapeHtml(q.kind) + " / " + (q.mode === "read" ? "読み" : "書き") +
+      "<br>答え：" + escapeHtml(q.answer);
+    list.appendChild(div);
+  });
+}
+
+function toggleAllList() { document.getElementById("allBox").classList.toggle("hidden"); }
+function toggleMisses() { showMisses(); document.getElementById("missBox").classList.toggle("hidden"); }
+
+function backToSetting() {
+  document.getElementById("settingBox").classList.remove("hidden");
+  document.getElementById("testArea").classList.add("hidden");
+  updateMemoryInfo();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+document.addEventListener("keydown", function(event) {
+  if(document.getElementById("testArea").classList.contains("hidden")) return;
+  if(event.key === "ArrowRight" || event.key === "Enter") nextQuestion();
+  if(event.key === "ArrowLeft") prevQuestion();
+  if(event.key === " ") {
+    event.preventDefault();
+    toggleAnswer();
+  }
+});
+
+updateMemoryInfo();
+</script>
+</body>
+</html>
